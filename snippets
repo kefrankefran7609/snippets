@@ -1,0 +1,90 @@
+// Basic search fields tha includes
+document.querySelectorAll('[filter-search]').forEach(filter => {
+    filter.addEventListener('keyup', (e) => {
+      const list = e.target.getAttribute('filter-search')
+      const offenses = document.querySelector(`[u-filter-list=${list}]`);
+      offenses.querySelectorAll(`[u-data-${language}]`).forEach(el => {
+        if (!(el.getAttribute(`u-data-${language}`).toLowerCase()).includes(e.target
+            .value
+            .toLowerCase())) {
+          el.style.display = "none";
+        }
+        else {
+          el.style.display = "flex";
+        }
+      })
+    })
+  })
+
+//Search that check for the first charcarters of every work in the string
+document.querySelectorAll('[filter-search]').forEach(filter => {
+    filter.addEventListener('keyup', (e) => {
+      const list = e.target.getAttribute('filter-search')
+      const offenses = document.querySelector(`[u-filter-list=${list}]`);
+      offenses.querySelectorAll(`[u-data-${language}]`).forEach(el => {
+        const dataValue = el.getAttribute(`u-data-${language}`).toLowerCase();
+        const searchValue = e.target.value.toLowerCase();
+        const words = dataValue.split(' ');
+        const matches = words.some(word => word.startsWith(searchValue));
+        if (!matches) {
+          el.style.display = "none";
+        } else {
+          el.style.display = "flex";
+        }
+      })
+    })
+  })
+  
+
+  //Sort items
+  document.querySelectorAll("[u-filter-list]").forEach((filter) => {
+    var items = Array.from(filter.querySelectorAll("[u-filter-button]"));
+
+    items.sort(function (a, b) {
+
+      var uDataA = a.getAttribute(`u-data-${language}`).toLowerCase();
+      var uDataB = b.getAttribute(`u-data-${language}`).toLowerCase();
+
+      if (uDataA < uDataB) {
+        return -1;
+      }
+      if (uDataA > uDataB) {
+        return 1;
+      }
+      return 0;
+    });
+
+    items.forEach(function (item) {
+      filter.appendChild(item);
+    });
+  })
+
+  
+  // Sort system with Atributes for API call
+  sorts.forEach(el => {
+    el.addEventListener('click', (e) => {
+      orderBy = e.target.getAttribute('u-sort').split('-')[0]
+      sortingField = e.target.getAttribute('u-sort').split('-')[1]
+      pageNumber = 1
+      itemsPerPage = 100
+      getItems()
+      scrollTop()
+      sorts.forEach(sort => sort.classList.remove('is-active'))
+      el.classList.add('is-active')
+      el.querySelector('.dashboard_list-header_item-arrow').classList.toggle(
+        'is-active')
+      //Reversing the sorting if using the same button to sort in both ways
+      if (sortingField == "lastName") {
+        if (orderBy == "asc") e.target.setAttribute("u-sort", "desc-lastName")
+        else e.target.setAttribute("u-sort", "asc-lastName")
+      }
+      else if (sortingField == "sortFirstName") {
+        if (orderBy == "asc") e.target.setAttribute("u-sort", "desc-sortFirstName")
+        else e.target.setAttribute("u-sort", "asc-sortFirstName")
+      }
+      else if (sortingField == "YearCommitted") {
+        if (orderBy == "asc") e.target.setAttribute("u-sort", "desc-YearCommitted")
+        else e.target.setAttribute("u-sort", "asc-YearCommitted")
+      }
+    })
+  })
